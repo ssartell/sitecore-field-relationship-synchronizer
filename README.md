@@ -1,5 +1,5 @@
 # Sitecore Field Relationship Synchronizer
-Maintains relationships between fields on different items.
+Maintains relationships between treelist fields on different items.
 
 Add the following xml to the config in the SaveUI pipeline before the WorkflowSaveCommand processor:
 
