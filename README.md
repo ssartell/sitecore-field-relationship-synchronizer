@@ -9,7 +9,7 @@ XML Configuration
 --------------
 To configure relationships, patch the following xml to the config in the `SaveUI` pipeline (or whatever pipeline suits your needs) before the `WorkflowSaveCommand` processor:
 
-```
+```XML
 <processor mode="on" type="Sitecore.Sharedsource.Pipelines.Save.SynchronizeFieldRelationships, FieldRelationshipSynchronizer">
     <param type="Sitecore.Sharedsource.FieldRelationships.ConfigRelationshipCollection, FieldRelationshipSynchronizer">
         <fieldRelationships hint="raw:AddFieldRelationship">
