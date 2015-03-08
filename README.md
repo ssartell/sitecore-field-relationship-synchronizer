@@ -1,9 +1,9 @@
 # Sitecore Field Relationship Synchronizer
-Maintains relationships between items by automatically synchronizing treelist or multilist fields on save. Droplinks can also be synchronized but may result in an invalid state if multiple items try to relate to a single item.
+Maintains relationships between items by automatically synchronizing treelist or multilist fields on save. Droplinks can also be synchronized but may result in an invalid state if multiple items try to relate to a single item. Relationships can be defined as one-way or two-way.
 
 Example Scenario
 --------------
-Let's say we had templates for students and courses. Each student has a treelist of courses and each course has a treelist of students. This project can keep both sides synchronized such that adding or removing a course from a student will automatically update all affected courses by modifying their student treelists.
+Let's say we had templates for students and courses that had a many-to-many relationship. Each student has a treelist of courses and each course has a treelist of students. This project can keep both sides synchronized such that adding or removing a course from a student will automatically update all affected courses by modifying their student treelists.
 
 XML Configuration
 --------------
