@@ -13,11 +13,11 @@ To configure relationships, patch the following xml to the config in the `SaveUI
 <processor mode="on" type="Sitecore.Sharedsource.Pipelines.Save.SynchronizeFieldRelationships, FieldRelationshipSynchronizer">
     <param type="Sitecore.Sharedsource.FieldRelationships.ConfigRelationshipCollection, FieldRelationshipSynchronizer">
         <fieldRelationships hint="raw:AddFieldRelationship">
-            <!-- leftFieldId: field guid -->
-            <!-- rightFieldId: field guid -->
+            <!-- leftFieldId: field guid from template -->
+            <!-- rightFieldId: field guid from template -->
             <!-- syncDirection: 0=None, 1=LeftToRight, 2=RightToLeft, 3=Both -->
             <fieldRelationship leftFieldId="{5B310D21-A2DB-4278-BA46-36AFA17D47CF}" rightFieldId="{B41C5FDC-010D-4D0E-9694-F888CBAEA5E5}" syncDirection="3"/>
-            <!-- add more fieldRelationships here-->
+            <!-- add additional fieldRelationship elements here-->
         </fieldRelationships>
     </param>
 </processor>
@@ -25,4 +25,4 @@ To configure relationships, patch the following xml to the config in the `SaveUI
 
 Custom Code Configuration
 --------------
-If you'd prefer to implement your own configuration, implement `Sitecore.Sharedsource.FieldRelationships.IRelationshipCollection` and replace the `ConfigRelationshipCollection` param in the above xml with your own implementation. For example, your implementation could read relationships stored as items in the content tree.
+If you'd prefer to use a custom configuration instead of xml, implement `Sitecore.Sharedsource.FieldRelationships.IRelationshipCollection` and replace the `ConfigRelationshipCollection` param in the above xml with your own implementation. For example, your implementation could read relationships stored as items in the content tree.
