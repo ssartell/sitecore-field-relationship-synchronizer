@@ -1,5 +1,5 @@
 # Sitecore Field Relationship Synchronizer
-Maintains relationships between items by automatically synchronizing treelist fields on one or both ends.
+Maintains relationships between items by automatically synchronizing treelist or multilist fields on save.
 
 For instance, let's say we had templates for students and courses. Each student has a treelist of courses and each course has a treelist of students. This project can keep both sides synchronized such that adding or removing a course from a student will automatically update all affected courses by modifying their student treelists.
 
