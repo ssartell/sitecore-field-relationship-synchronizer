@@ -11,13 +11,14 @@ namespace Sitecore.Sharedsource.Pipelines.Save
     {
         private readonly IEnumerable<FieldRelationship> _relationships;
 
+        private readonly Database _database = Database.GetDatabase("master");
+        
+        private readonly char[] _delimiters = { '|' };
+
         public SynchronizeFieldRelationships(IRelationshipCollection relationshipCollection)
         {
             this._relationships = relationshipCollection;
         }
-
-        private readonly Database _database = Database.GetDatabase("master");
-        private readonly char[] _delimiters = { '|' };
 
         public void Process(SaveArgs args)
         {
