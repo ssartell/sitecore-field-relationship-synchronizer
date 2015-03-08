@@ -1,8 +1,12 @@
 # Sitecore Field Relationship Synchronizer
 Maintains relationships between items by automatically synchronizing treelist or multilist fields on save.
 
+Example Scenario
+--------------
 For instance, let's say we had templates for students and courses. Each student has a treelist of courses and each course has a treelist of students. This project can keep both sides synchronized such that adding or removing a course from a student will automatically update all affected courses by modifying their student treelists.
 
+XML Configuration
+--------------
 To configure relationships, patch the following xml to the config in the `SaveUI` pipeline (or whatever pipeline suits your needs) before the `WorkflowSaveCommand` processor:
 
 ```
@@ -19,4 +23,6 @@ To configure relationships, patch the following xml to the config in the `SaveUI
 </processor>
 ```
 
+Custom Code Configuration
+--------------
 If you'd prefer to implement your own configuration, implement `Sitecore.Sharedsource.FieldRelationships.IRelationshipCollection` and replace the `ConfigRelationshipCollection` param with your own implementation.
