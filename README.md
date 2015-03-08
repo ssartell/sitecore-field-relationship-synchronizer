@@ -25,4 +25,4 @@ To configure relationships, patch the following xml to the config in the `SaveUI
 
 Custom Code Configuration
 --------------
-If you'd prefer to implement your own configuration, implement `Sitecore.Sharedsource.FieldRelationships.IRelationshipCollection` and replace the `ConfigRelationshipCollection` param with your own implementation. For example, your implementation could read relationships stored as items in the content tree.
+If you'd prefer to implement your own configuration, implement `Sitecore.Sharedsource.FieldRelationships.IRelationshipCollection` and replace the `ConfigRelationshipCollection` param in the above xml with your own implementation. For example, your implementation could read relationships stored as items in the content tree.
