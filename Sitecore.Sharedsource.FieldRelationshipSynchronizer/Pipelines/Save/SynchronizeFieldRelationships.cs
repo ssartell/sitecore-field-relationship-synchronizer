@@ -25,92 +25,94 @@ namespace Sitecore.Sharedsource.Pipelines.Save
             {
                 foreach (var field in item.Fields)
                 {
-                    if (field.OriginalValue == field.Value) return;
+                    if (field.OriginalValue == field.Value) continue;
 
-                    this.SyncLeftToRight(field, item);
-                    this.SyncRightToLeft(field, item);
+                    this.SyncLeftToRightRelationships(field, item);
+                    this.SyncRightToLeftRelationships(field, item);
                 }
             }
         }
 
-        protected void SyncLeftToRight(SaveArgs.SaveField leftField, SaveArgs.SaveItem item)
+        protected void SyncLeftToRightRelationships(SaveArgs.SaveField savedField, SaveArgs.SaveItem savedItem)
         {
-            var relevantRelationships = this._relationships.Where(x => x.LeftFieldId == leftField.ID);
+            var matchingRelationships = this._relationships.Where(x => x.LeftFieldId == savedField.ID);
 
-            foreach (var relationship in relevantRelationships)
+            foreach (var relationship in matchingRelationships)
             {
                 if (relationship.SyncDirection == SyncDirection.Both ||
                     relationship.SyncDirection == SyncDirection.LeftToRight)
                 {
-                    this.UpdateUnmodifiedField(item, leftField, relationship.RightFieldId);
+                    this.UpdateOtherField(savedItem, savedField, relationship.RightFieldId);
                 }
             }
         }
 
-        protected void SyncRightToLeft(SaveArgs.SaveField rightField, SaveArgs.SaveItem item)
+        protected void SyncRightToLeftRelationships(SaveArgs.SaveField savedField, SaveArgs.SaveItem savedItem)
         {
-            var relevantRelationships = this._relationships.Where(x => x.RightFieldId == rightField.ID);
+            var matchingRelationships = this._relationships.Where(x => x.RightFieldId == savedField.ID);
 
-            foreach (var relationship in relevantRelationships)
+            foreach (var relationship in matchingRelationships)
             {
                 if (relationship.SyncDirection == SyncDirection.Both ||
                     relationship.SyncDirection == SyncDirection.RightToLeft)
                 {
-                    this.UpdateUnmodifiedField(item, rightField, relationship.LeftFieldId);
+                    this.UpdateOtherField(savedItem, savedField, relationship.LeftFieldId);
                 }
             }
         }
 
-        protected void UpdateUnmodifiedField(SaveArgs.SaveItem modifiedItem, SaveArgs.SaveField modifiedField, ID unmodifiedFieldId)
+        protected void UpdateOtherField(SaveArgs.SaveItem savedItem, SaveArgs.SaveField savedField, ID otherFieldId)
         {
-            var unmodifiedField = this._database.GetItem(unmodifiedFieldId);
+            var originalIds = savedField.OriginalValue.Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries);
+            var newIds = savedField.Value.Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries);
 
-            if (unmodifiedField == null) return;
+            var addedItemIds = newIds.Except(originalIds).Select(ID.Parse);
+            this.AddItemIds(addedItemIds, savedItem.ID, otherFieldId);
 
-            var originalIds = modifiedField.OriginalValue.Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries);
-            var newIds = modifiedField.Value.Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries);
-
-            var addedIds = newIds.Except(originalIds).Select(ID.Parse);
-            var removedIds = originalIds.Except(newIds).Select(ID.Parse);
-
-            this.Add(addedIds, modifiedItem.ID, unmodifiedFieldId);
-            this.Remove(removedIds, modifiedItem.ID, unmodifiedFieldId);
+            var removedItemIds = originalIds.Except(newIds).Select(ID.Parse);
+            this.RemoveItemIds(removedItemIds, savedItem.ID, otherFieldId);
         }
 
-        protected void Add(IEnumerable<ID> itemIds, ID itemIdToAdd, ID unmodifiedFieldId)
+        protected void AddItemIds(IEnumerable<ID> otherItemIds, ID savedItemId, ID otherFieldId)
         {
-            foreach (var id in itemIds)
+            foreach (var otherItemId in otherItemIds)
             {
-                var unmodifiedItem = this._database.GetItem(id);
-                var field = unmodifiedItem.Fields.SingleOrDefault(x => x.ID == unmodifiedFieldId);
+                var otherItem = this._database.GetItem(otherItemId);
+                otherItem.Fields.ReadAll();
 
-                if (field == null) return;
+                var otherField = otherItem.Fields.SingleOrDefault(x => x.ID == otherFieldId);
+                if (otherField == null) return;
 
-                var ids = field.Value.Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries).ToList();
-                ids.Add(itemIdToAdd.ToString());
-                var updatedValue = string.Join("|", ids);
+                var ids = otherField.Value
+                    .Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries)
+                    .ToList();
+                ids.Add(savedItemId.ToString());
+                var updatedValue = string.Join("|", ids.Distinct());
 
-                unmodifiedItem.Editing.BeginEdit();
-                field.Value = updatedValue;
-                unmodifiedItem.Editing.EndEdit();
+                otherItem.Editing.BeginEdit();
+                otherField.Value = updatedValue;
+                otherItem.Editing.EndEdit();
             }
         }
 
-        protected void Remove(IEnumerable<ID> itemIds, ID itemIdToRemove, ID unmodifiedFieldId)
+        protected void RemoveItemIds(IEnumerable<ID> otherItemIds, ID savedItemId, ID otherFieldId)
         {
-            foreach (var id in itemIds)
+            foreach (var otherItemId in otherItemIds)
             {
-                var unmodifiedItem = this._database.GetItem(id);
-                var field = unmodifiedItem.Fields.SingleOrDefault(x => x.ID == unmodifiedFieldId);
+                var otherItem = this._database.GetItem(otherItemId);
+                otherItem.Fields.ReadAll();
 
-                if (field == null) return;
+                var otherField = otherItem.Fields.SingleOrDefault(x => x.ID == otherFieldId);
+                if (otherField == null) return;
 
-                var updatedIds = field.Value.Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries).Where(x => x != itemIdToRemove.ToString());
-                var updatedValue = string.Join("|", updatedIds);
+                var updatedIds = otherField.Value
+                    .Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries)
+                    .Where(x => x != savedItemId.ToString());
+                var updatedValue = string.Join("|", updatedIds.Distinct());
 
-                unmodifiedItem.Editing.BeginEdit();
-                field.Value = updatedValue;
-                unmodifiedItem.Editing.EndEdit();
+                otherItem.Editing.BeginEdit();
+                otherField.Value = updatedValue;
+                otherItem.Editing.EndEdit();
             }
         }
     }
