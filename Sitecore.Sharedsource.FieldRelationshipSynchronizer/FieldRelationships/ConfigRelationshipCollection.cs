@@ -5,7 +5,7 @@ using Sitecore.Xml;
 
 namespace Sitecore.Sharedsource.FieldRelationships
 {
-    public class ConfigRelationshipCollection : IRelationshipCollection
+    public class ConfigRelationshipCollection : IEnumerable<FieldRelationship>
     {
         public ConfigRelationshipCollection()
         {

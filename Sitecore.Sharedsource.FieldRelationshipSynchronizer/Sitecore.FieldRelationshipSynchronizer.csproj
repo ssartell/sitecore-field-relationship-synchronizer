@@ -48,7 +48,6 @@
     <Compile Include="FieldRelationships\FieldRelationship.cs" />
     <Compile Include="Pipelines\Save\SynchronizeFieldRelationships.cs" />
     <Compile Include="FieldRelationships\ConfigRelationshipCollection.cs" />
-    <Compile Include="FieldRelationships\IRelationshipCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FieldRelationships\SyncDirection.cs" />
   </ItemGroup>

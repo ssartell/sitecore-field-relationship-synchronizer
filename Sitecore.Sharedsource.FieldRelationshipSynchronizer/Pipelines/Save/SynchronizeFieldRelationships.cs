@@ -15,7 +15,7 @@ namespace Sitecore.Sharedsource.Pipelines.Save
         
         private readonly char[] _delimiters = { '|' };
 
-        public SynchronizeFieldRelationships(IRelationshipCollection relationshipCollection)
+        public SynchronizeFieldRelationships(IEnumerable<FieldRelationship> relationshipCollection)
         {
             this._relationships = relationshipCollection;
         }
