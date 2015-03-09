@@ -68,47 +68,27 @@ namespace Sitecore.Sharedsource.Pipelines.Save
             var newIds = savedField.Value.Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries);
 
             var removedItemIds = originalIds.Except(newIds).Select(ID.Parse);
-            this.RemoveSavedItem(removedItemIds, otherFieldId, savedItem.ID);
+            this.ModifyItems(removedItemIds, otherFieldId, ids => ids.Where(x => x != savedItem.ID.ToString()));
 
             var addedItemIds = newIds.Except(originalIds).Select(ID.Parse);
-            this.AddSavedItem(addedItemIds, otherFieldId, savedItem.ID);            
+            this.ModifyItems(addedItemIds, otherFieldId, ids => ids.Concat(new[] { savedItem.ID.ToString() }));            
         }
 
-        protected void AddSavedItem(IEnumerable<ID> otherItemIds, ID otherFieldId, ID savedItemId)
+        protected void ModifyItems(IEnumerable<ID> itemIdsToModify, ID fieldIdToModify, Func<IEnumerable<string>, IEnumerable<string>> modifyValue)
         {
-            foreach (var otherItemId in otherItemIds)
+            foreach (var itemId in itemIdsToModify)
             {
-                var otherItem = this._database.GetItem(otherItemId);
+                var otherItem = this._database.GetItem(itemId);
                 otherItem.Fields.ReadAll();
 
-                var otherField = otherItem.Fields.SingleOrDefault(x => x.ID == otherFieldId);
+                var otherField = otherItem.Fields.SingleOrDefault(x => x.ID == fieldIdToModify);
                 if (otherField == null) return;
 
                 var ids = otherField.Value
                     .Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries)
-                    .Concat(new[] { savedItemId.ToString() });
+                    .AsEnumerable();
+                ids = modifyValue(ids);
                 var updatedValue = string.Join("|", ids.Distinct());
-
-                otherItem.Editing.BeginEdit();
-                otherField.Value = updatedValue;
-                otherItem.Editing.EndEdit();
-            }
-        }
-
-        protected void RemoveSavedItem(IEnumerable<ID> otherItemIds, ID otherFieldId, ID savedItemId)
-        {
-            foreach (var otherItemId in otherItemIds)
-            {
-                var otherItem = this._database.GetItem(otherItemId);
-                otherItem.Fields.ReadAll();
-
-                var otherField = otherItem.Fields.SingleOrDefault(x => x.ID == otherFieldId);
-                if (otherField == null) return;
-
-                var updatedIds = otherField.Value
-                    .Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(x => x != savedItemId.ToString());
-                var updatedValue = string.Join("|", updatedIds.Distinct());
 
                 otherItem.Editing.BeginEdit();
                 otherField.Value = updatedValue;
