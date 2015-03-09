@@ -43,7 +43,7 @@ namespace Sitecore.Sharedsource.Pipelines.Save
                 if (relationship.SyncDirection == SyncDirection.Both ||
                     relationship.SyncDirection == SyncDirection.LeftToRight)
                 {
-                    this.UpdateOtherField(savedItem, savedField, relationship.RightFieldId);
+                    this.SyncOtherField(savedItem, savedField, relationship.RightFieldId);
                 }
             }
         }
@@ -57,24 +57,24 @@ namespace Sitecore.Sharedsource.Pipelines.Save
                 if (relationship.SyncDirection == SyncDirection.Both ||
                     relationship.SyncDirection == SyncDirection.RightToLeft)
                 {
-                    this.UpdateOtherField(savedItem, savedField, relationship.LeftFieldId);
+                    this.SyncOtherField(savedItem, savedField, relationship.LeftFieldId);
                 }
             }
         }
 
-        protected void UpdateOtherField(SaveArgs.SaveItem savedItem, SaveArgs.SaveField savedField, ID otherFieldId)
+        protected void SyncOtherField(SaveArgs.SaveItem savedItem, SaveArgs.SaveField savedField, ID otherFieldId)
         {
             var originalIds = savedField.OriginalValue.Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries);
             var newIds = savedField.Value.Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries);
 
-            var addedItemIds = newIds.Except(originalIds).Select(ID.Parse);
-            this.AddItemIds(addedItemIds, savedItem.ID, otherFieldId);
-
             var removedItemIds = originalIds.Except(newIds).Select(ID.Parse);
-            this.RemoveItemIds(removedItemIds, savedItem.ID, otherFieldId);
+            this.RemoveSavedItem(removedItemIds, otherFieldId, savedItem.ID);
+
+            var addedItemIds = newIds.Except(originalIds).Select(ID.Parse);
+            this.AddSavedItem(addedItemIds, otherFieldId, savedItem.ID);            
         }
 
-        protected void AddItemIds(IEnumerable<ID> otherItemIds, ID savedItemId, ID otherFieldId)
+        protected void AddSavedItem(IEnumerable<ID> otherItemIds, ID otherFieldId, ID savedItemId)
         {
             foreach (var otherItemId in otherItemIds)
             {
@@ -86,8 +86,7 @@ namespace Sitecore.Sharedsource.Pipelines.Save
 
                 var ids = otherField.Value
                     .Split(this._delimiters, StringSplitOptions.RemoveEmptyEntries)
-                    .ToList();
-                ids.Add(savedItemId.ToString());
+                    .Concat(new[] { savedItemId.ToString() });
                 var updatedValue = string.Join("|", ids.Distinct());
 
                 otherItem.Editing.BeginEdit();
@@ -96,7 +95,7 @@ namespace Sitecore.Sharedsource.Pipelines.Save
             }
         }
 
-        protected void RemoveItemIds(IEnumerable<ID> otherItemIds, ID savedItemId, ID otherFieldId)
+        protected void RemoveSavedItem(IEnumerable<ID> otherItemIds, ID otherFieldId, ID savedItemId)
         {
             foreach (var otherItemId in otherItemIds)
             {
