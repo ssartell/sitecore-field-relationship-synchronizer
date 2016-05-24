@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Xml;
 using Sitecore.Xml;
 
-namespace Sitecore.Sharedsource.FieldRelationships
+namespace Rightpoint.Sitecore.FieldSync.Config
 {
-    public class ConfigRelationshipCollection : IEnumerable<FieldRelationship>
+    public class RelationshipCollection : IEnumerable<FieldRelationship>
     {
-        public ConfigRelationshipCollection()
+        public RelationshipCollection()
         {
             this.FieldRelationships = new List<FieldRelationship>();
         }

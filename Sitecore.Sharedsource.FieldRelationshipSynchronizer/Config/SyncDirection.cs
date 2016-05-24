@@ -1,4 +1,4 @@
-﻿namespace Sitecore.Sharedsource.FieldRelationships
+﻿namespace Rightpoint.Sitecore.FieldSync.Config
 {
     public enum SyncDirection
     {

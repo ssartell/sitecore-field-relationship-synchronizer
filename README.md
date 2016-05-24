@@ -10,17 +10,26 @@ XML Configuration
 To configure relationships, patch the following xml to the config in the `SaveUI` pipeline (or whatever pipeline suits your needs) before the `WorkflowSaveCommand` processor:
 
 ```XML
-<processor mode="on" type="Sitecore.Sharedsource.Pipelines.Save.SynchronizeFieldRelationships, FieldRelationshipSynchronizer">
-    <param type="Sitecore.Sharedsource.FieldRelationships.ConfigRelationshipCollection, FieldRelationshipSynchronizer">
-        <fieldRelationships hint="raw:AddFieldRelationship">
-            <!-- leftFieldId: field guid from template -->
-            <!-- rightFieldId: field guid from template -->
-            <!-- syncDirection: 0=None, 1=LeftToRight, 2=RightToLeft, 3=Both -->
-            <fieldRelationship leftFieldId="{5B310D21-A2DB-4278-BA46-36AFA17D47CF}" rightFieldId="{B41C5FDC-010D-4D0E-9694-F888CBAEA5E5}" syncDirection="3"/>
-            <!-- add additional fieldRelationship elements here-->
-        </fieldRelationships>
-    </param>
-</processor>
+<configuration xmlns:patch="http://www.sitecore.net/xmlconfig/">
+  <sitecore>
+    <processors>
+      <saveUI>
+        <processor mode="on" type="Rightpoint.Sitecore.FieldSync.Pipelines.SaveUI.FieldSync, Rightpoint.Sitecore.FieldSync">
+          <param type="Rightpoint.Sitecore.FieldSync.FieldRelationships.ConfigRelationshipCollection, Rightpoint.Sitecore.FieldSync">
+            <fieldRelationships hint="raw:AddFieldRelationship">
+              <!-- leftFieldId: field guid from template -->
+              <!-- rightFieldId: field guid from template -->
+              <!-- syncDirection: 0=None, 1=LeftToRight, 2=RightToLeft, 3=Both -->
+
+              <!-- example -->
+              <fieldRelationship leftFieldId="{93F250AA-2C83-4A1F-9EA0-A06352E987C2}" rightFieldId="{E9FE63B2-07C4-47C1-885E-7554DE9B5D67}" syncDirection="3"/>
+            </fieldRelationships>
+          </param>
+        </processor>
+      </saveUI>
+    </processors>
+  </sitecore>
+</configuration>
 ```
 
 Custom Code Configuration

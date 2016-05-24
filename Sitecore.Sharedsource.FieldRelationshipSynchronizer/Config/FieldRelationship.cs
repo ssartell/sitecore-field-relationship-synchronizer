@@ -1,7 +1,7 @@
 ﻿using System;
 using Sitecore.Data;
 
-namespace Sitecore.Sharedsource.FieldRelationships
+namespace Rightpoint.Sitecore.FieldSync.Config
 {
     public class FieldRelationship
     {

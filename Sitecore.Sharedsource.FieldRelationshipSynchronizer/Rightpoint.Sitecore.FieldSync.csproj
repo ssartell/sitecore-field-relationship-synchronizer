@@ -7,8 +7,8 @@
     <ProjectGuid>{1A222FFC-F365-46A7-906A-C5B8FA0F0047}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Sitecore.Sharedsource</RootNamespace>
-    <AssemblyName>FieldRelationshipSynchronizer</AssemblyName>
+    <RootNamespace>Rightpoint.Sitecore.FieldSync</RootNamespace>
+    <AssemblyName>Rightpoint.Sitecore.FieldSync</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -45,11 +45,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FieldRelationships\FieldRelationship.cs" />
-    <Compile Include="Pipelines\Save\SynchronizeFieldRelationships.cs" />
-    <Compile Include="FieldRelationships\ConfigRelationshipCollection.cs" />
+    <Compile Include="Config\FieldRelationship.cs" />
+    <Compile Include="FieldSyncService.cs" />
+    <Compile Include="Pipelines\SaveUI\FieldSync.cs" />
+    <Compile Include="Config\RelationshipCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FieldRelationships\SyncDirection.cs" />
+    <Compile Include="Config\SyncDirection.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App_Config\Include\FieldSync.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="FieldRelationships\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
