@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App_Config\Include\FieldSync.config" />
+    <None Include="Rightpoint.Sitecore.FieldSync.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FieldRelationships\" />

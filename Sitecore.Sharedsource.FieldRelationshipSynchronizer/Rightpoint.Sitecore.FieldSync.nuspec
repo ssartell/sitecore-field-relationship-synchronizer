@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>ssartell</authors>
+    <owners>ssartell</owners>
+    <licenseUrl>https://github.com/ssartell/sitecore-field-relationship-synchronizer/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/ssartell/sitecore-field-relationship-synchronizer</projectUrl>
+    <!--<iconUrl></iconUrl>-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Allows you to create bidirectional relationships between two fields that will stay in sync.</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>Sitecore</tags>
+  </metadata>
+</package>
